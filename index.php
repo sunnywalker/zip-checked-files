@@ -105,8 +105,39 @@ if (isset($_GET['list'])) {
             })
             .catch(function (err) { console.log('error fetching data', err); });
     }
+
+    // refresh button
     document.getElementById('refresh').addEventListener('click', loadFiles);
+
+    // do initial page refresh
     loadFiles(null);
+
+    // check all button
+    document.getElementById('check-all').addEventListener('click', function (ev) {
+        console.log('check all');
+        ev.preventDefault();
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+        }
+    });
+
+    // check none button
+    document.getElementById('check-none').addEventListener('click', function (ev) {
+        console.log('check none');
+        ev.preventDefault();
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+        }
+    });
+
+    // check toggle button
+    document.getElementById('check-toggle').addEventListener('click', function (ev) {
+        console.log('check toggle');
+        ev.preventDefault();
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = !checkboxes[i].checked;
+        }
+    });
 })();
 </script>
 </body>
