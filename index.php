@@ -18,7 +18,7 @@ if (isset($_GET['list'])) {
                     'name' => $basename,
                     'size' => filesize($file),
                     'type' => mime_content_type($file),
-                    'extension' => $last_dot_pos !== false ? substr($basename, $last_dot_pos + 1) : '',
+                    'extension' => $last_dot_pos !== false ? strtolower(substr($basename, $last_dot_pos + 1)) : '',
                 ];
             }
         }
