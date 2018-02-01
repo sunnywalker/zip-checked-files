@@ -83,6 +83,14 @@ if (isset($_GET['list'])) {
         console.log('loading files');
         ev && ev.preventDefault();
         o.innerHTML = '<tr><td class="notice" colspan="3">Loading…</td></tr>';
+        // preserve existing checkmarks
+        var already_checked = [];
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                already_checked.push(checkboxes[i].value.toLowerCase());
+            }
+        }
+        // load the list of files from the API
         fetch('./?list')
             .then(function (resp) { return resp.json(); })
             .then(function (json) {
@@ -90,7 +98,7 @@ if (isset($_GET['list'])) {
                     var all = [];
                     for (var i in json) {
                         var tr = '<tr>';
-                        tr += '<td><label><input type="checkbox" name="files[]" value="' + json[i].name + '"> ' + json[i].name + '</label></td>';
+                        tr += '<td><label><input type="checkbox" name="files[]" value="' + json[i].name + '"' + (already_checked.indexOf(json[i].name.toLowerCase()) >= 0 ? ' checked' : '') + '> ' + json[i].name + '</label></td>';
                         tr += '<td>' + json[i].extension + '</td>';
                         tr += '<td>' + humanFileSize(json[i].size) + '</td>';
                         tr += '</tr>';
