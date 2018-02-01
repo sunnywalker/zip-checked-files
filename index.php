@@ -76,10 +76,9 @@ if (isset($_GET['list'])) {
 
 <script>
 !(function () {
-    var o = document.getElementById('o'),
-        refresh = document.getElementById('refresh'),
-        download = document.getElementById('download'),
-        checkboxes = [];
+    var o = document.getElementById('o'), // output target for list of files
+        checkboxes = []; // cache checkboxes in the DOM
+
     function loadFiles(ev) {
         console.log('loading files');
         ev && ev.preventDefault();
