@@ -93,7 +93,7 @@ if (isset($_GET['list'])) {
                         var tr = '<tr>';
                         tr += '<td><label><input type="checkbox" name="files[]" value="' + json[i].name + '"> ' + json[i].name + '</label></td>';
                         tr += '<td>' + json[i].extension + '</td>';
-                        tr += '<td>' + json[i].size + '</td>';
+                        tr += '<td>' + humanFileSize(json[i].size) + '</td>';
                         tr += '</tr>';
                         all.push(tr);
                     }
@@ -104,6 +104,12 @@ if (isset($_GET['list'])) {
                 }
             })
             .catch(function (err) { console.log('error fetching data', err); });
+    }
+
+    // From https://stackoverflow.com/a/20732091/1071925
+    function humanFileSize(size) {
+        var i = Math.floor(Math.log(size) / Math.log(1024));
+        return (size / Math.pow(1024, i)).toFixed(1) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
     }
 
     // refresh button
