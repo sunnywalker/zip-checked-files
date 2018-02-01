@@ -23,6 +23,7 @@ if (isset($_GET['list'])) {
             }
         }
         uksort($files, 'strnatcasecmp'); // case-insensitive sort
+        $files = array_values($files); // un-key the array for better JSON
     }
     echo json_encode($files);
     exit;
@@ -79,6 +80,33 @@ if (isset($_GET['list'])) {
         refresh = document.getElementById('refresh'),
         download = document.getElementById('download'),
         checkboxes = [];
+    function loadFiles(ev) {
+        console.log('loading files');
+        ev && ev.preventDefault();
+        o.innerHTML = '<tr><td class="notice" colspan="3">Loading…</td></tr>';
+        fetch('./?list')
+            .then(function (resp) { return resp.json(); })
+            .then(function (json) {
+                if (json && json.length) {
+                    var all = [];
+                    for (var i in json) {
+                        var tr = '<tr>';
+                        tr += '<td><label><input type="checkbox" name="files[]" value="' + json[i].name + '"> ' + json[i].name + '</label></td>';
+                        tr += '<td>' + json[i].extension + '</td>';
+                        tr += '<td>' + json[i].size + '</td>';
+                        tr += '</tr>';
+                        all.push(tr);
+                    }
+                    o.innerHTML = all.join('\n');
+                    checkboxes = o.querySelectorAll('[type="checkbox"]');
+                } else {
+                    o.innerHTML = '<tr><td class="notice" colspan="3">No eligible files were found</td></tr>';
+                }
+            })
+            .catch(function (err) { console.log('error fetching data', err); });
+    }
+    document.getElementById('refresh').addEventListener('click', loadFiles);
+    loadFiles(null);
 })();
 </script>
 </body>
