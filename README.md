@@ -12,7 +12,7 @@ In this example, some files are ignored from the directory scan, including
 
 ## Tech Used
 
-- JavaScript
+- (Vanilla) JavaScript
     - [fetch API](https://fetch.spec.whatwg.org/)
     - [querySelector](https://dom.spec.whatwg.org/#dom-parentnode-queryselector)
 - PHP
