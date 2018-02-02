@@ -28,6 +28,40 @@ if (isset($_GET['list'])) {
     echo json_encode($files);
     exit;
 }
+
+// if the download was triggered, build the zip file
+if (isset($_POST['submit']) && $_POST['submit'] === 'zip' && !empty($_POST['files'])) {
+    if (count($_POST['files'])) {
+        $zip = new ZipArchive();
+        $date = date('Y-m-d @ gia');
+        // create a zip file in the system's temp directory
+        $zip_file = sys_get_temp_dir().DIRECTORY_SEPARATOR."Archive {$date}.zip";
+        if ($zip->open($zip_file, ZipArchive::CREATE) !== true) {
+            die("Cannot create temporary zip file.");
+        }
+        // add all the files (if allowed)
+        foreach ($_POST['files'] as $name) {
+            $name = basename($name); // filter out malicious ../ attacks
+            $disk_name = FILES_DIRECTORY.DIRECTORY_SEPARATOR.$name;
+            if (is_readable($disk_name) && !preg_match(EXTENSION_BLACKLIST, $name)) {
+                $zip->addFile($disk_name, $name);
+            }
+        }
+        $zip->close();
+        // force download of the zip file
+        header('Pragma: public'); // required
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: private', false); // required for certain browsers
+        header('Content-Disposition: attachment; filename="'.str_replace('"', '\\"', basename($zip_file)).'";');
+        header('Content-Type: application/zip');
+        header('Content-Length: '.filesize($zip_file));
+        readfile($zip_file);
+        // delete the temp zip file
+        unlink($zip_file);
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
